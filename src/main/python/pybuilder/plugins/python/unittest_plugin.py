@@ -71,7 +71,7 @@ def run_tests(project, logger, execution_prefix, execution_name):
                                         project, logger, execution_prefix, execution_name))
         if exit_code:
             raise BuildFailedException(
-                "Forked %s process indicated failure with error code %d" % (execution_name, exit_code))
+                "Forked {0!s} process indicated failure with error code {1:d}".format(execution_name, exit_code))
     else:
         do_run_tests(project, logger, execution_prefix, execution_name)
 
@@ -79,24 +79,24 @@ def run_tests(project, logger, execution_prefix, execution_name):
 def do_run_tests(project, logger, execution_prefix, execution_name):
     test_dir = _register_test_and_source_path_and_return_test_dir(project, sys.path, execution_prefix)
 
-    file_suffix = project.get_property("%s_file_suffix" % execution_prefix)
+    file_suffix = project.get_property("{0!s}_file_suffix".format(execution_prefix))
     if file_suffix is not None:
         logger.warn(
-            "%(prefix)s_file_suffix is deprecated, please use %(prefix)s_module_glob" % {"prefix": execution_prefix})
+            "{prefix!s}_file_suffix is deprecated, please use {prefix!s}_module_glob".format(**{"prefix": execution_prefix}))
         module_glob = "*{0}".format(file_suffix)
         if module_glob.endswith(".py"):
             WITHOUT_DOT_PY = slice(0, -3)
             module_glob = module_glob[WITHOUT_DOT_PY]
-        project.set_property("%s_module_glob" % execution_prefix, module_glob)
+        project.set_property("{0!s}_module_glob".format(execution_prefix), module_glob)
     else:
-        module_glob = project.get_property("%s_module_glob" % execution_prefix)
+        module_glob = project.get_property("{0!s}_module_glob".format(execution_prefix))
 
     logger.info("Executing %s from Python modules in %s", execution_name, test_dir)
     logger.debug("Including files matching '%s'", module_glob)
 
     try:
-        test_method_prefix = project.get_property("%s_test_method_prefix" % execution_prefix)
-        runner_generator = project.get_property("%s_runner" % execution_prefix)
+        test_method_prefix = project.get_property("{0!s}_test_method_prefix".format(execution_prefix))
+        runner_generator = project.get_property("{0!s}_runner".format(execution_prefix))
         result, console_out = execute_tests_matching(runner_generator, logger, test_dir, module_glob,
                                                      test_method_prefix)
 
@@ -108,8 +108,7 @@ def do_run_tests(project, logger, execution_prefix, execution_name):
         write_report(execution_prefix, project, logger, result, console_out)
 
         if not result.wasSuccessful():
-            raise BuildFailedException("There were %d error(s) and %d failure(s) in %s"
-                                       % (len(result.errors), len(result.failures), execution_name))
+            raise BuildFailedException("There were {0:d} error(s) and {1:d} failure(s) in {2!s}".format(len(result.errors), len(result.failures), execution_name))
         logger.info("All %s passed.", execution_name)
     except ImportError as e:
         import traceback
@@ -119,7 +118,7 @@ def do_run_tests(project, logger, execution_prefix, execution_name):
         logger.error("Import error in test file {0}, due to statement '{1}' on line {2}".format(
             file_with_error, statement_causing_error, error_line))
         logger.error("Error importing %s: %s", execution_prefix, e)
-        raise BuildFailedException("Unable to execute %s." % execution_name)
+        raise BuildFailedException("Unable to execute {0!s}.".format(execution_name))
 
 
 def execute_tests(runner_generator, logger, test_source, suffix, test_method_prefix=None):
@@ -203,7 +202,7 @@ def _instrument_result(logger, result):
 
 
 def _register_test_and_source_path_and_return_test_dir(project, system_path, execution_prefix):
-    test_dir = project.expand_path("$dir_source_%s_python" % execution_prefix)
+    test_dir = project.expand_path("$dir_source_{0!s}_python".format(execution_prefix))
     system_path.insert(0, test_dir)
     system_path.insert(0, project.expand_path("$dir_source_main_python"))
 
@@ -211,7 +210,7 @@ def _register_test_and_source_path_and_return_test_dir(project, system_path, exe
 
 
 def write_report(name, project, logger, result, console_out):
-    project.write_report("%s" % name, console_out)
+    project.write_report("{0!s}".format(name), console_out)
 
     report = {"tests-run": result.testsRun,
               "errors": [],
@@ -233,7 +232,7 @@ def write_report(name, project, logger, result, console_out):
         if project.get_property("verbose"):
             print_text_line(failure[1])
 
-    project.write_report("%s.json" % name, render_report(report))
+    project.write_report("{0!s}.json".format(name), render_report(report))
 
     report_to_ci_server(project, result)
 

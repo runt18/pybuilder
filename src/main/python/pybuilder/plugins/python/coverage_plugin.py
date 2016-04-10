@@ -55,18 +55,18 @@ def verify_coverage(project, logger, reactor):
 def run_coverage(project, logger, reactor, execution_prefix, execution_name, target_task, shortest_plan=False):
     logger.info("Collecting coverage information")
 
-    if project.get_property("%s_fork" % execution_prefix) is not None:
+    if project.get_property("{0!s}_fork".format(execution_prefix)) is not None:
         logger.warn(
             "%s_fork is deprecated, coverage always runs in its own fork", execution_prefix)
 
-    if project.get_property("%s_reload_modules" % execution_prefix) is not None:
+    if project.get_property("{0!s}_reload_modules".format(execution_prefix)) is not None:
         logger.warn(
             "%s_reload_modules is deprecated - modules are no longer reloaded", execution_prefix)
 
-    if project.get_property("%s_branch_threshold_warn" % execution_prefix) == 0:
+    if project.get_property("{0!s}_branch_threshold_warn".format(execution_prefix)) == 0:
         logger.warn("%s_branch_threshold_warn is 0 and branch coverage will not be checked", execution_prefix)
 
-    if project.get_property("%s_branch_partial_threshold_warn" % execution_prefix) == 0:
+    if project.get_property("{0!s}_branch_partial_threshold_warn".format(execution_prefix)) == 0:
         logger.warn("%s_branch_partial_threshold_warn is 0 and partial branch coverage will not be checked",
                     execution_prefix)
 
@@ -76,9 +76,9 @@ def run_coverage(project, logger, reactor, execution_prefix, execution_name, tar
                                 args=(
                                     project, logger, reactor, execution_prefix, execution_name,
                                     target_task, shortest_plan))
-    if exit_code and project.get_property("%s_break_build" % execution_prefix):
+    if exit_code and project.get_property("{0!s}_break_build".format(execution_prefix)):
         raise BuildFailedException(
-            "Forked %s process indicated failure with error code %d" % (execution_name, exit_code))
+            "Forked {0!s} process indicated failure with error code {1:d}".format(execution_name, exit_code))
 
 
 def do_coverage(project, logger, reactor, execution_prefix, execution_name, target_task, shortest_plan):
@@ -88,7 +88,7 @@ def do_coverage(project, logger, reactor, execution_prefix, execution_name, targ
     It's best to simple let this method exit and the fork die rather than to try to recover.
     """
     source_tree_path = project.get_property("dir_source_main_python")
-    reset_modules = project.get_property("%s_reset_modules" % execution_prefix)
+    reset_modules = project.get_property("{0!s}_reset_modules".format(execution_prefix))
     module_names = _discover_modules_to_cover(project)
 
     for module_name in module_names:
@@ -113,7 +113,7 @@ def do_coverage(project, logger, reactor, execution_prefix, execution_name, targ
     finally:
         _stop_coverage(project, coverage)
 
-    module_exceptions = project.get_property("%s_exceptions" % execution_prefix)
+    module_exceptions = project.get_property("{0!s}_exceptions".format(execution_prefix))
     modules = _list_all_covered_modules(logger, module_names, module_exceptions)
 
     failure = _build_coverage_report(project, logger, execution_name, execution_prefix, coverage, modules)
@@ -163,9 +163,9 @@ def _build_coverage_report(project, logger, execution_name, execution_prefix, co
     coverage_too_low = False
     branch_coverage_too_low = False
     branch_partial_coverage_too_low = False
-    threshold = project.get_property("%s_threshold_warn" % execution_prefix)
-    branch_threshold = project.get_property("%s_branch_threshold_warn" % execution_prefix)
-    branch_partial_threshold = project.get_property("%s_branch_partial_threshold_warn" % execution_prefix)
+    threshold = project.get_property("{0!s}_threshold_warn".format(execution_prefix))
+    branch_threshold = project.get_property("{0!s}_branch_threshold_warn".format(execution_prefix))
+    branch_partial_threshold = project.get_property("{0!s}_branch_partial_threshold_warn".format(execution_prefix))
 
     report = {
         "module_names": []
@@ -203,17 +203,17 @@ def _build_coverage_report(project, logger, execution_name, execution_prefix, co
         logger.debug("Module coverage report: %s", module_report)
         report["module_names"].append(module_report)
         if module_report_data.code_coverage < threshold:
-            msg = "Test coverage below %2d%% for %s: %2d%%" % (threshold, module_name, module_report_data.code_coverage)
+            msg = "Test coverage below {0:2d}% for {1!s}: {2:2d}%".format(threshold, module_name, module_report_data.code_coverage)
             logger.warn(msg)
             coverage_too_low = True
         if module_report_data.branch_coverage < branch_threshold:
-            msg = "Branch coverage below %2d%% for %s: %2d%%" % (
+            msg = "Branch coverage below {0:2d}% for {1!s}: {2:2d}%".format(
                 branch_threshold, module_name, module_report_data.branch_coverage)
             logger.warn(msg)
             branch_coverage_too_low = True
 
         if module_report_data.branch_partial_coverage < branch_partial_threshold:
-            msg = "Partial branch coverage below %2d%% for %s: %2d%%" % (
+            msg = "Partial branch coverage below {0:2d}% for {1!s}: {2:2d}%".format(
                 branch_partial_threshold, module_name, module_report_data.branch_partial_coverage)
             logger.warn(msg)
             branch_partial_coverage_too_low = True
@@ -254,15 +254,15 @@ def _build_coverage_report(project, logger, execution_name, execution_prefix, co
     else:
         logger.info("Overall %s partial branch coverage is %2d%%", execution_name, overall_branch_partial_coverage)
 
-    project.write_report("%s.json" % execution_prefix, render_report(report))
+    project.write_report("{0!s}.json".format(execution_prefix), render_report(report))
 
     _write_summary_report(coverage, project, modules, execution_prefix, execution_name)
 
-    if coverage_too_low and project.get_property("%s_break_build" % execution_prefix):
+    if coverage_too_low and project.get_property("{0!s}_break_build".format(execution_prefix)):
         return BuildFailedException("Test coverage for at least one module is below %d%%", threshold)
-    if branch_coverage_too_low and project.get_property("%s_break_build" % execution_prefix):
+    if branch_coverage_too_low and project.get_property("{0!s}_break_build".format(execution_prefix)):
         return BuildFailedException("Test branch coverage for at least one module is below %d%%", branch_threshold)
-    if branch_partial_coverage_too_low and project.get_property("%s_break_build" % execution_prefix):
+    if branch_partial_coverage_too_low and project.get_property("{0!s}_break_build".format(execution_prefix)):
         return BuildFailedException("Test partial branch coverage for at least one module is below %d%%",
                                     branch_partial_threshold)
 
@@ -274,8 +274,8 @@ def _write_summary_report(coverage, project, modules, execution_prefix, executio
     try:
         coverage.report(modules, file=summary)
         try:
-            coverage.xml_report(modules, outfile=project.expand_path("$dir_reports/%s.xml" % execution_prefix))
-            coverage.html_report(modules, directory=project.expand_path("$dir_reports/%s_html" % execution_prefix),
+            coverage.xml_report(modules, outfile=project.expand_path("$dir_reports/{0!s}.xml".format(execution_prefix)))
+            coverage.html_report(modules, directory=project.expand_path("$dir_reports/{0!s}_html".format(execution_prefix)),
                                  title=execution_name)
             coverage.save()
         except CoverageException:

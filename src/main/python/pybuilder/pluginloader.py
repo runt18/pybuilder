@@ -59,7 +59,7 @@ class BuiltinPluginLoader(PluginLoader):
 
     def load_plugin(self, project, name, version=None, plugin_module_name=None):
         self.logger.debug("Trying to load builtin plugin '%s'", name)
-        builtin_plugin_name = plugin_module_name or "pybuilder.plugins.%s_plugin" % name
+        builtin_plugin_name = plugin_module_name or "pybuilder.plugins.{0!s}_plugin".format(name)
 
         plugin_module = _load_plugin(builtin_plugin_name, name)
         self.logger.debug("Found builtin plugin '%s'", builtin_plugin_name)
@@ -190,8 +190,8 @@ def _install_external_plugin(project, name, version, logger, plugin_module_name,
 
 
 def _plugin_display_name(name, version, plugin_module_name):
-    return "%s%s%s" % (name, " version %s" % version if version else "",
-                       ", module name '%s'" % plugin_module_name if plugin_module_name else "")
+    return "{0!s}{1!s}{2!s}".format(name, " version {0!s}".format(version) if version else "",
+                       ", module name '{0!s}'".format(plugin_module_name) if plugin_module_name else "")
 
 
 def _load_plugin(plugin_module_name, plugin_name):

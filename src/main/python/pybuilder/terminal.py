@@ -72,7 +72,7 @@ def styled_text(text, *style_attributes):
         - the text itself
         - a reset of all style attributes
     """
-    return "%s%s%s" % (
+    return "{0!s}{1!s}{2!s}".format(
         _ESCAPE_SEQUENCE_PATTERN % (_ESCAPE_SEQUENCE_SEPARATOR.join(style_attributes)),
         text,
         _ESCAPE_SEQUENCE_PATTERN % "0;0")

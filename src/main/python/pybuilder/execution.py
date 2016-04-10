@@ -83,7 +83,7 @@ class Executable(object):
         if isinstance(self.callable, types.FunctionType):
             self.parameters = getargspec(self.callable).args
         else:
-            raise TypeError("Don't know how to handle callable %s" % callable)
+            raise TypeError("Don't know how to handle callable {0!s}".format(callable))
 
     @property
     def name(self):
@@ -93,7 +93,7 @@ class Executable(object):
         arguments = []
         for parameter in self.parameters:
             if parameter not in argument_dict:
-                raise ValueError("Invalid parameter '%s' for %s %s" % (parameter, self.__class__.__name__, self.name))
+                raise ValueError("Invalid parameter '{0!s}' for {1!s} {2!s}".format(parameter, self.__class__.__name__, self.name))
             arguments.append(argument_dict[parameter])
 
         self.callable(*arguments)

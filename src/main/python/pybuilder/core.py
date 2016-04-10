@@ -320,7 +320,7 @@ class Project(object):
         self._postinstall_script = None
 
     def __str__(self):
-        return "[Project name=%s basedir=%s]" % (self.name, self.basedir)
+        return "[Project name={0!s} basedir={1!s}]".format(self.name, self.basedir)
 
     @property
     def version(self):
@@ -354,7 +354,7 @@ class Project(object):
         for dependency in self.build_dependencies:
             if dependency.name in build_dependencies_found:
                 if build_dependencies_found[dependency.name] == 1:
-                    result.append("Build dependency '%s' has been defined multiple times." % dependency.name)
+                    result.append("Build dependency '{0!s}' has been defined multiple times.".format(dependency.name))
                 build_dependencies_found[dependency.name] += 1
             else:
                 build_dependencies_found[dependency.name] = 1
@@ -364,12 +364,12 @@ class Project(object):
         for dependency in self.dependencies:
             if dependency.name in runtime_dependencies_found:
                 if runtime_dependencies_found[dependency.name] == 1:
-                    result.append("Runtime dependency '%s' has been defined multiple times." % dependency.name)
+                    result.append("Runtime dependency '{0!s}' has been defined multiple times.".format(dependency.name))
                 runtime_dependencies_found[dependency.name] += 1
             else:
                 runtime_dependencies_found[dependency.name] = 1
             if dependency.name in build_dependencies_found:
-                result.append("Runtime dependency '%s' has also been given as build dependency." % dependency.name)
+                result.append("Runtime dependency '{0!s}' has also been given as build dependency.".format(dependency.name))
 
         return result
 

@@ -62,7 +62,7 @@ def build_command_line(project):
 @task("analyze")
 def execute_pychecker(project, logger):
     command_line = build_command_line(project)
-    logger.info("Executing pychecker on project sources: %s" % (' '.join(command_line)))
+    logger.info("Executing pychecker on project sources: {0!s}".format((' '.join(command_line))))
 
     _, report_file = execute_tool_on_modules(project, "pychecker", command_line, True)
 

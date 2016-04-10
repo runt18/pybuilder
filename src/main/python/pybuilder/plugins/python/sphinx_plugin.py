@@ -86,7 +86,7 @@ def assert_sphinx_quickstart_is_available(logger):
 
 
 def run_sphinx_build(build_command, task_name, logger, project):
-    logger.info("Running %s" % task_name)
+    logger.info("Running {0!s}".format(task_name))
     log_file = project.expand_path(
         "$dir_target/reports/{0}".format(task_name))
     if project.get_property("verbose"):
@@ -125,18 +125,18 @@ def get_sphinx_quickstart_command(project):
         :param -v: Version of project.
     """
     options = ["-q",
-               "-p '%s'" % project.get_property("sphinx_project_name"),
-               "-a '%s'" % project.get_property("sphinx_doc_author"),
-               "-v %s" % project.get_property("sphinx_project_version"),
-               "%s" % project.expand_path
-               (project.get_property("sphinx_source_dir"))]
-    return "sphinx-quickstart %s" % " ".join(options)
+               "-p '{0!s}'".format(project.get_property("sphinx_project_name")),
+               "-a '{0!s}'".format(project.get_property("sphinx_doc_author")),
+               "-v {0!s}".format(project.get_property("sphinx_project_version")),
+               "{0!s}".format(project.expand_path
+               (project.get_property("sphinx_source_dir")))]
+    return "sphinx-quickstart {0!s}".format(" ".join(options))
 
 
 def get_sphinx_build_command(project):
     """Builds the sphinx-build command using properties.
     """
-    options = ["-b %s" % project.get_property("sphinx_doc_builder"),
+    options = ["-b {0!s}".format(project.get_property("sphinx_doc_builder")),
                project.expand_path(project.get_property("sphinx_config_path")),
                project.expand_path(project.get_property("sphinx_output_dir"))]
-    return "sphinx-build %s" % " ".join(options)
+    return "sphinx-build {0!s}".format(" ".join(options))

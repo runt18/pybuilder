@@ -164,8 +164,8 @@ def write_manifest_file(project, logger):
         logger.debug("No data to write into MANIFEST.in")
         return
 
-    logger.debug("Files included in MANIFEST.in: %s" %
-                 project.manifest_included_files)
+    logger.debug("Files included in MANIFEST.in: {0!s}".format(
+                 project.manifest_included_files))
 
     manifest_filename = project.expand_path("$dir_dist", "MANIFEST.in")
     logger.info("Writing MANIFEST.in as %s", manifest_filename)
@@ -180,11 +180,11 @@ def render_manifest_file(project):
     manifest_content = StringIO()
 
     for included_file in project.manifest_included_files:
-        manifest_content.write("include %s\n" % included_file)
+        manifest_content.write("include {0!s}\n".format(included_file))
 
     for directory, pattern_list in project.manifest_included_directories:
         patterns = ' '.join(pattern_list)
-        manifest_content.write("recursive-include %s %s\n" % (directory, patterns))
+        manifest_content.write("recursive-include {0!s} {1!s}\n".format(directory, patterns))
 
     return manifest_content.getvalue()
 
@@ -205,7 +205,7 @@ def install_distribution(project, logger):
 
     _prepare_reports_dir(project)
     outfile_name = project.expand_path("$dir_reports", "distutils",
-                                       "pip_install_%s" % datetime.utcnow().strftime("%Y%m%d%H%M%S"))
+                                       "pip_install_{0!s}".format(datetime.utcnow().strftime("%Y%m%d%H%M%S")))
     pip_install(project.expand_path("$dir_dist"), index_url=project.get_property("install_dependencies_index_url"),
                 extra_index_url=project.get_property("install_dependencies_extra_index_url"),
                 force_reinstall=True, logger=logger, verbose=project.get_property("verbose"), cwd=".",
@@ -228,9 +228,9 @@ def upload(project, logger):
             upload_sign_args += ["--identity", sign_identity]
 
     logger.info("Uploading project %s-%s%s%s%s", project.name, project.version,
-                (" to repository '%s'" % repository) if repository else "",
+                (" to repository '{0!s}'".format(repository)) if repository else "",
                 get_dist_version_string(project, " as version %s"),
-                (" signing%s" % (" with %s" % sign_identity if sign_identity else "")) if upload_sign else "")
+                (" signing{0!s}".format((" with {0!s}".format(sign_identity) if sign_identity else ""))) if upload_sign else "")
     upload_cmd_line = [build_command_with_options(cmd, project.get_property("distutils_command_options")) + ["upload"] +
                        repository_args + upload_sign_args
                        for cmd in as_list(project.get_property("distutils_commands"))]
@@ -271,7 +271,7 @@ def execute_distutils(project, logger, distutils_commands, clean=False):
             return_code = _run_process_and_wait(commands, project.expand_path("$dir_dist"), output_file)
             if return_code != 0:
                 raise BuildFailedException(
-                    "Error while executing setup command %s, see %s for details" % (command, output_file_path))
+                    "Error while executing setup command {0!s}, see {1!s} for details".format(command, output_file_path))
 
 
 def strip_comments(requirements):
@@ -280,7 +280,7 @@ def strip_comments(requirements):
 
 
 def quote(requirements):
-    return ['"%s"' % requirement for requirement in requirements]
+    return ['"{0!s}"'.format(requirement) for requirement in requirements]
 
 
 def is_editable_requirement(requirement):
@@ -295,7 +295,7 @@ def flatten_and_quote(requirements_file):
 
 
 def format_single_dependency(dependency):
-    return '%s%s' % (dependency.name, build_dependency_version_string(dependency))
+    return '{0!s}{1!s}'.format(dependency.name, build_dependency_version_string(dependency))
 
 
 def build_install_dependencies_string(project):
@@ -341,7 +341,7 @@ def build_dependency_links_string(project):
         return "[]"
 
     def format_single_dependency(dependency):
-        return '%s' % dependency.url
+        return '{0!s}'.format(dependency.url)
 
     all_dependency_links = [link for link in map(format_single_dependency, dependency_links)]
     all_dependency_links.extend(editable_links_from_requirements)
@@ -377,7 +377,7 @@ def build_data_files_string(project):
     result = "[\n"
 
     for dataType, dataFiles in data_files:
-        result += (" " * (indent + 4)) + "('%s', ['" % dataType
+        result += (" " * (indent + 4)) + "('{0!s}', ['".format(dataType)
         result += "', '".join(dataFiles)
         result += "']),\n"
 
@@ -399,7 +399,7 @@ def build_package_data_string(project):
 
     for pkgType in sorted_keys:
         result += " " * (indent + 4)
-        result += "'%s': " % pkgType
+        result += "'{0!s}': ".format(pkgType)
         result += "['"
         result += "', '".join(package_data[pkgType])
         result += "'],\n"
@@ -438,7 +438,7 @@ def build_entry_points_string(project):
 
     for k in sorted(entry_points.keys()):
         result += " " * (indent + 4)
-        result += "'%s': %s" % (k, build_string_from_array(entry_points[k], indent + 8)) + ",\n"
+        result += "'{0!s}': {1!s}".format(k, build_string_from_array(entry_points[k], indent + 8)) + ",\n"
 
     result = result[:-2] + "\n"
     result += (" " * indent) + "}"
@@ -462,7 +462,7 @@ def build_string_from_array(arr, indent=12):
             if is_notstr_iterable(arr[0]):
                 result += "[" + build_string_from_array(arr[0], indent + 4) + "]"
             else:
-                result += "['%s']" % arr[0]
+                result += "['{0!s}']".format(arr[0])
         else:
             result = '[[]]'
     elif len(arr) > 1:
@@ -488,7 +488,7 @@ def build_string_from_dict(d, indent=12):
     map_elements = []
 
     for k, v in d.items():
-        map_elements.append("'%s': '%s'" % (k, v))
+        map_elements.append("'{0!s}': '{1!s}'".format(k, v))
 
     result = ""
 

@@ -51,12 +51,12 @@ class ReportsProcessor(object):
         self.project.write_report("integrationtest.json", render_report(self.test_report))
         self.logger.info("Executed %d integration tests.", self.tests_executed)
         if self.tests_failed:
-            raise BuildFailedException("%d of %d integration tests failed." % (self.tests_failed, self.tests_executed))
+            raise BuildFailedException("{0:d} of {1:d} integration tests failed.".format(self.tests_failed, self.tests_executed))
 
     def report_to_ci_server(self, project):
         for report in self.reports:
             test_name = report['test']
             test_failed = report['success'] is not True
-            with test_proxy_for(project).and_test_name('Integrationtest.%s' % test_name) as test:
+            with test_proxy_for(project).and_test_name('Integrationtest.{0!s}'.format(test_name)) as test:
                 if test_failed:
                     test.fails(report['exception'])

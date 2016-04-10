@@ -99,7 +99,7 @@ def execute_tool_on_modules(project, name, command_and_arguments, extend_pythonp
     modules = discover_modules(source_dir)
     command = as_list(command_and_arguments) + modules
 
-    report_file = project.expand_path("$dir_reports/%s" % name)
+    report_file = project.expand_path("$dir_reports/{0!s}".format(name))
 
     env = os.environ
     if extend_pythonpath:

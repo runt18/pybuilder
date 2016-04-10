@@ -52,7 +52,7 @@ def build_dependency_version_string(mixed):
         return ""
 
     try:
-        return ">=%s" % Version(version)
+        return ">={0!s}".format(Version(version))
     except InvalidVersion:
         try:
             return str(SpecifierSet(version))
