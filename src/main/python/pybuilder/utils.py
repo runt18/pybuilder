@@ -279,12 +279,14 @@ def fake_windows_fork(group, target, name, args, kwargs):
     return 0, target(*args, **kwargs)
 
 
-def fork_process(logger, group=None, target=None, name=None, args=(), kwargs={}):
+def fork_process(logger, group=None, target=None, name=None, args=(), kwargs=None):
     """
     Forks a child, making sure that all exceptions from the child are safely sent to the parent
     If a target raises an exception, the exception is re-raised in the parent process
     @return tuple consisting of process exit code and target's return value
     """
+    if kwargs is None:
+        kwargs = {}
     if is_windows():
         logger.warn(
             "Not forking for %s due to Windows incompatibilities (see #184). "
@@ -527,8 +529,10 @@ if sys.version_info[0] == 2 and sys.version_info[1] == 6:  # if Python is 2.6
             self[key] = default
             return default
 
-        def __repr__(self, _repr_running={}):
+        def __repr__(self, _repr_running=None):
             'od.__repr__() <==> repr(od)'
+            if _repr_running is None:
+                _repr_running = {}
             call_key = id(self), _get_ident()
             if call_key in _repr_running:
                 return '...'
