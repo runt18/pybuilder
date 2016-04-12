@@ -191,11 +191,11 @@ class Reactor(object):
     def log_project_properties(self):
         formatted = ""
         for key in sorted(self.project.properties):
-            formatted += "\n%40s : %s" % (key, self.project.get_property(key))
+            formatted += "\n{0:40!s} : {1!s}".format(key, self.project.get_property(key))
         self.logger.debug("Project properties: %s", formatted)
 
     def import_plugin(self, plugin, version=None, plugin_module_name=None):
-        self.logger.debug("Loading plugin '%s'%s", plugin, " version %s" % version if version else "")
+        self.logger.debug("Loading plugin '%s'%s", plugin, " version {0!s}".format(version) if version else "")
         plugin_module = self.plugin_loader.load_plugin(self.project, plugin, version, plugin_module_name)
         self.collect_tasks_and_actions_and_initializers(plugin_module)
 
@@ -306,7 +306,7 @@ class Reactor(object):
             return imp.load_source("build", project_descriptor)
         except ImportError as e:
             raise PyBuilderException(
-                "Error importing project descriptor %s: %s" % (project_descriptor, e))
+                "Error importing project descriptor {0!s}: {1!s}".format(project_descriptor, e))
 
     @staticmethod
     def verify_project_directory(project_directory, project_descriptor):

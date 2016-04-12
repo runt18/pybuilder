@@ -111,7 +111,7 @@ def run_integration_tests_in_parallel(project, logger):
             except Empty:
                 break
             except Exception as e:
-                logger.error("Failed to run test %r : %s" % (test, str(e)))
+                logger.error("Failed to run test {0!r} : {1!s}".format(test, str(e)))
                 failed_report = {
                     "test": test,
                     "test_file": test,
@@ -170,8 +170,8 @@ def add_additional_environment_keys(env, project):
     additional_environment = project.get_property(
         "integrationtest_additional_environment", {})
     if not isinstance(additional_environment, dict):
-        raise ValueError("Additional environment %r is not a map." %
-                         additional_environment)
+        raise ValueError("Additional environment {0!r} is not a map.".format(
+                         additional_environment))
     for key in additional_environment:
         env[key] = additional_environment[key]
 
@@ -317,14 +317,14 @@ class TaskPoolProgress(object):
             self.WAITING_SYMBOL * waiting_tasks_count, fg(GREY))
         trailing_space = ' ' if not pacman else ''
 
-        return "[%s%s%s%s]%s" % (finished_tests_progress, pacman, running_tests_progress, waiting_tasks_progress, trailing_space)
+        return "[{0!s}{1!s}{2!s}{3!s}]{4!s}".format(finished_tests_progress, pacman, running_tests_progress, waiting_tasks_progress, trailing_space)
 
     def render_to_terminal(self):
         if self.can_be_displayed:
             text_to_render = self.render()
             characters_to_be_erased = self.last_render_length
             self.last_render_length = len(text_to_render)
-            text_to_render = "%s%s" % (characters_to_be_erased * self.BACKSPACE, text_to_render)
+            text_to_render = "{0!s}{1!s}".format(characters_to_be_erased * self.BACKSPACE, text_to_render)
             print_text(text_to_render, flush=True)
 
     def mark_as_finished(self):

@@ -93,7 +93,7 @@ def create_install_log_directory(logger, project):
 def install_dependency(logger, project, dependency):
     url = getattr(dependency, "url", None)
     logger.info("Installing dependency '%s'%s", dependency.name,
-                " from %s" % url if url else "")
+                " from {0!s}".format(url) if url else "")
     log_file = project.expand_path("$dir_install_logs", dependency.name)
     log_file = re.sub(r'<|>|=', '_', log_file)
 

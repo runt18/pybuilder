@@ -89,14 +89,14 @@ def get_py2dsc_deb_command(project):
         :param --maintainer: maintainer name and email to use.
         :param -d: directory to put final built.
     """
-    options = ["--maintainer '%s'" % project.get_property("deb_package_maintainer"),
-               "-d '%s'" % project.get_property("path_final_build"),
+    options = ["--maintainer '{0!s}'".format(project.get_property("deb_package_maintainer")),
+               "-d '{0!s}'".format(project.get_property("path_final_build")),
                project.get_property("path_to_source_tarball")]
-    return "py2dsc-deb %s" % " ".join(options)
+    return "py2dsc-deb {0!s}".format(" ".join(options))
 
 
 def run_py2dsc_deb_build(build_command, task_name, logger, project):
-    logger.info("Running %s" % task_name)
+    logger.info("Running {0!s}".format(task_name))
     log_file = project.expand_path(
         "$dir_target/reports/{0}".format(task_name))
     if project.get_property("verbose"):

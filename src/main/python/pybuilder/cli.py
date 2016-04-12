@@ -188,14 +188,14 @@ def parse_options(args):
     options, arguments = parser.parse_args(args=list(args))
 
     if options.list_tasks and options.list_plan_tasks:
-        parser.error("%s and %s are mutually exclusive" % (list_tasks_option, list_plan_tasks_option))
+        parser.error("{0!s} and {1!s} are mutually exclusive".format(list_tasks_option, list_plan_tasks_option))
     if options.start_project and options.update_project:
-        parser.error("%s and %s are mutually exclusive" % (start_project_option, update_project_option))
+        parser.error("{0!s} and {1!s} are mutually exclusive".format(start_project_option, update_project_option))
 
     property_overrides = {}
     for pair in options.property_overrides:
         if not PROPERTY_OVERRIDE_PATTERN.match(pair):
-            parser.error("%s is not a property definition." % pair)
+            parser.error("{0!s} is not a property definition.".format(pair))
         key, val = pair.split("=")
         property_overrides[key] = val
 
@@ -234,17 +234,16 @@ def init_logger(options):
 
 def print_build_summary(options, summary):
     print_text_line("Build Summary")
-    print_text_line("%20s: %s" % ("Project", summary.project.name))
-    print_text_line("%20s: %s%s" % ("Version", summary.project.version, get_dist_version_string(summary.project)))
-    print_text_line("%20s: %s" % ("Base directory", summary.project.basedir))
-    print_text_line("%20s: %s" %
-                    ("Environments", ", ".join(options.environments)))
+    print_text_line("{0:20!s}: {1!s}".format("Project", summary.project.name))
+    print_text_line("{0:20!s}: {1!s}{2!s}".format("Version", summary.project.version, get_dist_version_string(summary.project)))
+    print_text_line("{0:20!s}: {1!s}".format("Base directory", summary.project.basedir))
+    print_text_line("{0:20!s}: {1!s}".format("Environments", ", ".join(options.environments)))
 
     task_summary = ""
     for task in summary.task_summaries:
-        task_summary += " %s [%d ms]" % (task.task, task.execution_time)
+        task_summary += " {0!s} [{1:d} ms]".format(task.task, task.execution_time)
 
-    print_text_line("%20s:%s" % ("Tasks", task_summary))
+    print_text_line("{0:20!s}:{1!s}".format("Tasks", task_summary))
 
 
 def print_styled_text(text, options, *style_attributes):
@@ -270,9 +269,8 @@ def print_build_status(failure_message, options, successful):
 def print_elapsed_time_summary(start, end):
     time_needed = end - start
     millis = ((time_needed.days * 24 * 60 * 60) + time_needed.seconds) * 1000 + time_needed.microseconds / 1000
-    print_text_line("Build finished at %s" % format_timestamp(end))
-    print_text_line("Build took %d seconds (%d ms)" %
-                    (time_needed.seconds, millis))
+    print_text_line("Build finished at {0!s}".format(format_timestamp(end)))
+    print_text_line("Build took {0:d} seconds ({1:d} ms)".format(time_needed.seconds, millis))
 
 
 def print_summary(successful, summary, start, end, options, failure_message):
@@ -317,8 +315,8 @@ def print_task_list(tasks, quiet=False):
 
         if task.dependencies:
             whitespace = (column_length + 3) * " "
-            depends_on_message = "depends on tasks: %s" % " ".join(
-                [str(dependency) for dependency in task.dependencies])
+            depends_on_message = "depends on tasks: {0!s}".format(" ".join(
+                [str(dependency) for dependency in task.dependencies]))
             print_text_line(whitespace + depends_on_message)
 
 
@@ -326,14 +324,14 @@ def print_list_of_tasks(reactor, quiet=False):
     tasks = reactor.get_tasks()
     sorted_tasks = sorted(tasks)
     if not quiet:
-        print_text_line('Tasks found for project "%s":' % reactor.project.name)
+        print_text_line('Tasks found for project "{0!s}":'.format(reactor.project.name))
     print_task_list(sorted_tasks, quiet)
 
 
 def print_plan_list_of_tasks(options, arguments, reactor, quiet=False):
     execution_plan = reactor.create_execution_plan(arguments, options.environments)
     if not quiet:
-        print_text_line('Tasks that will be executed for project "%s":' % reactor.project.name)
+        print_text_line('Tasks that will be executed for project "{0!s}":'.format(reactor.project.name))
     print_task_list(execution_plan, quiet)
 
 
@@ -343,7 +341,7 @@ def main(*args):
     try:
         options, arguments = parse_options(args)
     except CommandLineUsageException as e:
-        print_error_line("Usage error: %s\n" % e)
+        print_error_line("Usage error: {0!s}\n".format(e))
         print_error(e.usage)
         return 1
 
@@ -379,7 +377,7 @@ def main(*args):
     if not options.very_quiet:
         print_styled_text_line(
             "PyBuilder version {0}".format(__version__), options, BOLD)
-        print_text_line("Build started at %s" % format_timestamp(start))
+        print_text_line("Build started at {0!s}".format(format_timestamp(start)))
         draw_line()
 
     successful = True

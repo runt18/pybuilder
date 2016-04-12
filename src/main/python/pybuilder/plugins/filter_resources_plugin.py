@@ -59,7 +59,7 @@ class ProjectDictWrapper(object):
         self.logger = logger
 
     def __getitem__(self, key):
-        fallback_when_no_substitution_possible = "${%s}" % key
+        fallback_when_no_substitution_possible = "${{{0!s}}}".format(key)
         if hasattr(self.project, key):
             return getattr(self.project, key)
         if self.project.has_property(key):

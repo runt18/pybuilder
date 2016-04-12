@@ -70,7 +70,7 @@ def suggest_plugins(plugins):
 
 
 def suggest(plugin):
-    choice = prompt_user('Use plugin %s (Y/n)?' % plugin, 'y')
+    choice = prompt_user('Use plugin {0!s} (Y/n)?'.format(plugin), 'y')
     plugin_enabled = not choice or choice.lower() == 'y'
     return plugin if plugin_enabled else None
 
@@ -222,7 +222,7 @@ def set_properties(project):
         return self.DESCRIPTOR_TEMPLATE.substitute(self.__dict__)
 
     def build_imports(self):
-        self.activated_plugins = '\n'.join(['use_plugin("%s")' % plugin for plugin in self.plugins])
+        self.activated_plugins = '\n'.join(['use_plugin("{0!s}")'.format(plugin) for plugin in self.plugins])
 
     def build_initializer(self):
         self.core_imports.append('init')

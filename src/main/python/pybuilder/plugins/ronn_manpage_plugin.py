@@ -75,8 +75,8 @@ def generate_manpages(project, logger):
 
 
 def build_generate_manpages_command(project):
-    ronn_pipe_command = 'ronn -r --pipe %s' % project.get_property('manpage_source')
-    compressed_manpage_file = '%s.%d.gz' % (project.name, project.get_property('manpage_section'))
-    compress_command = 'gzip -9 > %s' % os.path.join(project.get_property('dir_manpages'), compressed_manpage_file)
-    generate_manpages_command = '%s | %s' % (ronn_pipe_command, compress_command)
+    ronn_pipe_command = 'ronn -r --pipe {0!s}'.format(project.get_property('manpage_source'))
+    compressed_manpage_file = '{0!s}.{1:d}.gz'.format(project.name, project.get_property('manpage_section'))
+    compress_command = 'gzip -9 > {0!s}'.format(os.path.join(project.get_property('dir_manpages'), compressed_manpage_file))
+    generate_manpages_command = '{0!s} | {1!s}'.format(ronn_pipe_command, compress_command)
     return generate_manpages_command

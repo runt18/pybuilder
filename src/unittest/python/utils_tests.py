@@ -85,7 +85,7 @@ class FormatTimestampTest(unittest.TestCase):
     def assert_matches(self, regex, actual, message=None):
         if not re.match(regex, actual):
             if not message:
-                message = "'%s' does not match '%s'" % (actual, regex)
+                message = "'{0!s}' does not match '{1!s}'".format(actual, regex)
 
             self.fail(message)
 
@@ -363,7 +363,7 @@ class ForkTest(unittest.TestCase):
 
     def testForkParamPassing(self):
         def test_func(foo, bar):
-            return "%s%s" % (foo, bar)
+            return "{0!s}{1!s}".format(foo, bar)
 
         val = fork_process(mock(), target=test_func, kwargs={"foo": "foo", "bar": 10})
         self.assertEquals(len(val), 2)
@@ -381,7 +381,7 @@ class ForkTest(unittest.TestCase):
 
         try:
             val = fork_process(mock(), target=test_func)
-            self.fail("should not have reached here, returned %s" % val)
+            self.fail("should not have reached here, returned {0!s}".format(val))
         except:
             ex_type, ex, tb = sys.exc_info()
             self.assertEquals(ex_type, PyBuilderException)
@@ -416,7 +416,7 @@ class ForkTest(unittest.TestCase):
 
         try:
             val = fork_process(mock(), target=test_func)
-            self.fail("should not have reached here, returned %s" % val)
+            self.fail("should not have reached here, returned {0!s}".format(val))
         except:
             ex_type, ex, tb = sys.exc_info()
             self.assertEquals(ex_type, Exception)
@@ -439,7 +439,7 @@ class ForkTest(unittest.TestCase):
 
         try:
             val = fork_process(mock(), target=test_func)
-            self.fail("should not have reached here, returned %s" % val)
+            self.fail("should not have reached here, returned {0!s}".format(val))
         except:
             ex_type, ex, tb = sys.exc_info()
             self.assertEquals(ex_type, Exception)

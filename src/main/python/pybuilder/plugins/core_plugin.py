@@ -59,12 +59,12 @@ def prepare(project, logger):
 
     plugin_dependency_versions = get_package_version(project.plugin_dependencies, logger)
     for plugin_dependency in project.plugin_dependencies:
-        logger.debug("Processing plugin dependency %s" % plugin_dependency)
+        logger.debug("Processing plugin dependency {0!s}".format(plugin_dependency))
         if plugin_dependency.name.lower() not in plugin_dependency_versions or not \
             version_satisfies_spec(plugin_dependency.version,
                                    plugin_dependency_versions[plugin_dependency.name.lower()]):
-            logger.info("Installing plugin dependency %s" % plugin_dependency)
-            log_file = project.expand_path("$dir_reports", "dependency_%s_install.log" % plugin_dependency)
+            logger.info("Installing plugin dependency {0!s}".format(plugin_dependency))
+            log_file = project.expand_path("$dir_reports", "dependency_{0!s}_install.log".format(plugin_dependency))
             pip_install(as_pip_install_target(plugin_dependency),
                         index_url=project.get_property("install_dependencies_index_url"),
                         extra_index_url=project.get_property("install_dependencies_extra_index_url"),

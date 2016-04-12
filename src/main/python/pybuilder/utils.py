@@ -323,9 +323,9 @@ def fork_process(logger, group=None, target=None, name=None, args=(), kwargs={})
             raise_exception(result[1], result[2])
         return p.exitcode, result[0]
     else:
-        msg = "Fatal error occurred in the forked process %s: %s" % (p, result.args[0])
+        msg = "Fatal error occurred in the forked process {0!s}: {1!s}".format(p, result.args[0])
         if result.args[2]:
-            chained_message = "This error masked the send error '%s':\n%s" % (
+            chained_message = "This error masked the send error '{0!s}':\n{1!s}".format(
                 result.args[2], "".join(traceback.format_tb(result.args[3])))
             msg += "\n" + chained_message
         ex = Exception(msg)
@@ -365,7 +365,7 @@ if sys.version_info[0] == 2 and sys.version_info[1] == 6:  # if Python is 2.6
 
             '''
             if len(args) > 1:
-                raise TypeError('expected at most 1 arguments, got %d' % len(args))
+                raise TypeError('expected at most 1 arguments, got {0:d}'.format(len(args)))
             try:
                 self.__root
             except AttributeError:
@@ -535,8 +535,8 @@ if sys.version_info[0] == 2 and sys.version_info[1] == 6:  # if Python is 2.6
             _repr_running[call_key] = 1
             try:
                 if not self:
-                    return '%s()' % (self.__class__.__name__,)
-                return '%s(%r)' % (self.__class__.__name__, self.items())
+                    return '{0!s}()'.format(self.__class__.__name__)
+                return '{0!s}({1!r})'.format(self.__class__.__name__, self.items())
             finally:
                 del _repr_running[call_key]
 

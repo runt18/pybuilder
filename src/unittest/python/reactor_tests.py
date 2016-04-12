@@ -51,7 +51,7 @@ class TaskNameMatcher(Matcher):
         return arg.name == self.task_name
 
     def repr(self):
-        return "Task with name %s" % self.task_name
+        return "Task with name {0!s}".format(self.task_name)
 
 
 class ReactorTest(unittest.TestCase):
